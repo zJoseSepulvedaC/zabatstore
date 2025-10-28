@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Publicar</title>
+  </head>
+  <body>
+    <h2>Publicar maquinaria</h2>
+    <form th:action="@{/maquinarias}" th:object="${maquinaria}" method="post">
+      <input th:field="*{tipo}" placeholder="Tipo" /><br />
+      <input th:field="*{ubicacion}" placeholder="Ubicación" /><br />
+      <input type="date" th:field="*{disponibleDesde}" /><br />
+      <input
+        type="number"
+        step="0.01"
+        th:field="*{precioDiario}"
+        placeholder="Precio diario"
+      /><br />
+      <input th:field="*{marca}" placeholder="Marca" /><br />
+      <input type="number" th:field="*{anio}" placeholder="Año" /><br />
+      <input th:field="*{capacidad}" placeholder="Capacidad" /><br />
+      <textarea th:field="*{mantenciones}" placeholder="Mantenciones"></textarea
+      ><br />
+      <textarea th:field="*{condiciones}" placeholder="Condiciones"></textarea
+      ><br />
+      <input th:field="*{mediosPago}" placeholder="Medios de pago" /><br />
+      <button type="submit">Publicar</button>
+    </form>
+  </body>
+</html>

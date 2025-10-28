@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mi perfil</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <style>
+      .card {
+        width: 520px;
+        margin: 60px auto;
+        padding: 32px;
+        background: #fff;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+      }
+      h2 {
+        color: #336633;
+        text-align: center;
+        margin-bottom: 22px;
+      }
+      label {
+        display: block;
+        margin: 10px 0 6px;
+        font-weight: 600;
+      }
+      input,
+      textarea {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      textarea {
+        min-height: 90px;
+      }
+      .actions {
+        margin-top: 16px;
+        display: flex;
+        gap: 10px;
+      }
+      .btn {
+        flex: 1;
+        padding: 10px;
+        border: 0;
+        border-radius: 4px;
+        cursor: pointer;
+        background: #336633;
+        color: #fff;
+        font-size: 15px;
+      }
+      .btn.secondary {
+        background: #888;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h2>Mi perfil</h2>
+      <p th:if="${param.success}" style="color: green; text-align: center">
+        Perfil guardado correctamente.
+      </p>
+      <form th:action="@{/perfil}" th:object="${perfil}" method="post">
+        <!-- id oculto (para updates) -->
+        <input type="hidden" th:field="*{id}" />
+
+        <label>Dirección</label>
+        <input th:field="*{direccion}" placeholder="Calle 123, Comuna" />
+
+        <label>Teléfono</label>
+        <input th:field="*{telefono}" placeholder="+56 9 ...." />
+
+        <label>Cultivos</label>
+        <textarea
+          th:field="*{cultivos}"
+          placeholder="Ej: trigo, maíz, hortalizas"
+        ></textarea>
+
+        <!-- CSRF solo si está disponible -->
+        <input
+          type="hidden"
+          th:if="${_csrf != null}"
+          th:name="${_csrf.parameterName}"
+          th:value="${_csrf.token}"
+        />
+
+        <div class="actions">
+          <button class="btn" type="submit">Guardar</button>
+          <a
+            class="btn secondary"
+            th:href="@{/home}"
+            style="text-align: center; line-height: 36px"
+            >Volver</a
+          >
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

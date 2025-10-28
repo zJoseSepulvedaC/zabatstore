@@ -1,0 +1,46 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 40px;
+  background-color: #fafafa;
+}
+
+h2 {
+  color: #336633;
+}
+
+input,
+button,
+textarea {
+  padding: 6px;
+  margin: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  background-color: #336633;
+  color: white;
+  cursor: pointer;
+}
+
+a {
+  color: #0066cc;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+body {
+  background: linear-gradient(to bottom, #eef5ee, #d9e8d9);
+}
+
+a {
+  color: #336633;
+  font-weight: bold;
+}
+
+a:hover {
+  color: #224422;
+}

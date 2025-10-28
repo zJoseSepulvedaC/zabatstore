@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Maquinarias</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+  </head>
+  <body>
+    <h2>Maquinaria disponible</h2>
+
+    <form method="get" th:action="@{/maquinarias}">
+      <input type="text" name="tipo" placeholder="Tipo" th:value="${fTipo}" />
+      <input
+        type="text"
+        name="ubicacion"
+        placeholder="Ubicación"
+        th:value="${fUbicacion}"
+      />
+      <input type="date" name="fechaDesde" th:value="${fFechaDesde}" />
+      <input
+        type="number"
+        step="0.01"
+        name="maxPrecio"
+        placeholder="Precio máx"
+        th:value="${fMaxPrecio}"
+      />
+      <button type="submit">Buscar</button>
+    </form>
+
+    <p th:if="${#lists.isEmpty(maquinarias)}">No hay resultados.</p>
+
+    <ul>
+      <li th:each="m : ${maquinarias}">
+        <b th:text="${m.tipo}">Tipo</b> —
+        <span th:text="${m.ubicacion}">Ubicación</span> —
+        <span th:text="${m.precioDiario}">Precio</span>
+        <a th:href="@{'/maquinarias/' + ${m.id} + '/detalle'}">Ver detalle</a>
+      </li>
+    </ul>
+
+    <a th:href="@{/maquinarias/nueva}">Publicar (requiere login)</a>
+  </body>
+</html>

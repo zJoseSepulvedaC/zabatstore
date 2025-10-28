@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Detalle</title>
+  </head>
+  <body>
+    <a th:href="@{/maquinarias}">&larr; Volver</a>
+    <h2 th:text="${m.tipo}">Tipo</h2>
+    <p>Ubicación: <span th:text="${m.ubicacion}"></span></p>
+    <p>Disponible desde: <span th:text="${m.disponibleDesde}"></span></p>
+    <p>Precio diario: <span th:text="${m.precioDiario}"></span></p>
+    <hr />
+    <p>Marca: <span th:text="${m.marca}"></span></p>
+    <p>Año: <span th:text="${m.anio}"></span></p>
+    <p>Capacidad: <span th:text="${m.capacidad}"></span></p>
+    <p>Mantenciones: <span th:text="${m.mantenciones}"></span></p>
+    <p>Condiciones: <span th:text="${m.condiciones}"></span></p>
+    <p>Medios de pago: <span th:text="${m.mediosPago}"></span></p>
+  </body>
+</html>
