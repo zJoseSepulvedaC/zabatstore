@@ -1,14 +1,14 @@
-# Imagen base con Java 17
-FROM openjdk:17-jdk-slim
+# Etapa 1: compila con Maven
+FROM maven:3.9-eclipse-temurin-17 AS build
+WORKDIR /build
+COPY pom.xml .
+RUN mvn -q -DskipTests dependency:go-offline
+COPY src ./src
+RUN mvn -q -DskipTests package
 
-# Directorio dentro del contenedor
+# Etapa 2: runtime
+FROM eclipse-temurin:17-jre
 WORKDIR /app
-
-# Copiamos el jar directamente (ya está en la misma carpeta)
-COPY zabatstore-0.0.1-SNAPSHOT.jar app.jar
-
-# Exponemos el puerto de la app
+COPY --from=build /build/target/*.jar app.jar
 EXPOSE 8080
-
-# Comando de ejecución
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java","-jar","app.jar"]

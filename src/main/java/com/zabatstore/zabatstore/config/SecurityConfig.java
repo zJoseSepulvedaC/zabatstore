@@ -1,72 +1,90 @@
 package com.zabatstore.zabatstore.config;
 
-import com.zabatstore.zabatstore.service.UserDetailsServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final UserDetailsServiceImpl userDetailsService;
+    private final UserDetailsService userDetailsService; // tu impl: UserDetailsServiceImpl
 
-    // ✅ Inyección automática del servicio (Spring se encarga)
-    public SecurityConfig(UserDetailsServiceImpl userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
-
-    // === 1) Codificador de contraseñas ===
+    // Bean explícito de BCryptPasswordEncoder (necesario si algún componente lo inyecta por su clase concreta)
     @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // === 2) Autenticación basada en BD ===
+    // Bean de la interfaz PasswordEncoder (reutiliza el BCrypt anterior)
     @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
+    public PasswordEncoder passwordEncoder(BCryptPasswordEncoder bCrypt) {
+        return bCrypt;
     }
 
-
-    
-    // === 3) Filtro de seguridad y rutas ===
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .authenticationProvider(authenticationProvider())
+            // CSRF habilitado (Thymeleaf lo usa). Ignora H2 si lo usas.
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**", "/h2/**"))
+
+            // Permisos de URLs
             .authorizeHttpRequests(auth -> auth
-                // Públicas
-                .requestMatchers("/", "/home", "/login", "/registro",
-                                 "/css/**", "/js/**", "/images/**",
-                                 "/maquinarias").permitAll()
-                // Privadas
-                .requestMatchers(
-                        "/maquinarias/detalle/**",
-                        "/maquinarias/nueva",
-                        "/perfil/**",
-                        "/reservas/**"
-                ).authenticated()
+                // Estáticos
+                .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/favicon.ico").permitAll()
+                // Páginas públicas
+                .requestMatchers("/", "/home", "/recetas", "/login", "/registro", "/buscar", "/h2-console/**", "/h2/**").permitAll()
+                // APIs públicas (si tienes)
+                .requestMatchers("/api/public/**").permitAll()
+                // Todo lo demás requiere autenticación
+                .anyRequest().authenticated()
             )
-            .formLogin(form -> form
-                .loginPage("/login")
-                .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/perfil", true)
+
+            // Login con formulario (Thymeleaf)
+            .formLogin(login -> login
+                .loginPage("/login")                 // GET muestra el formulario
+                .loginProcessingUrl("/login")        // POST procesa credenciales
+                .defaultSuccessUrl("/perfil", true)  // redirección luego de logueo
+                .failureUrl("/login?error")
                 .permitAll()
             )
+
+            // Logout
             .logout(logout -> logout
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/home")
+                .logoutSuccessUrl("/login?logout")
+                .deleteCookies("JSESSIONID")
                 .permitAll()
             )
-            .csrf(csrf -> csrf.disable()); // puedes dejarlo así mientras desarrollas
+
+            // Manejo de sesión (stateful por formulario)
+            .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+
+            // Acceso denegado
+            .exceptionHandling(ex -> ex.accessDeniedPage("/acceso-denegado"))
+
+            // H2 console (permite iframes)
+            .headers(headers -> headers.frameOptions(frame -> frame.disable()));
+
+        // Usa tu UserDetailsService
+        http.userDetailsService(userDetailsService);
 
         return http.build();
     }

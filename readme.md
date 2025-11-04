@@ -35,3 +35,14 @@ que permite el arriendo de maquinaria agrícola entre usuarios.
 ==========================================
 Desarrollado con fines académicos
 ==========================================
+
+EJECUTAR CON VM
+
+cd ~/zabatstore
+
+rm -f src/main/java/com/zabatstore/zabatstore/config/PasswordConfig.java
+
+docker rm -f zabatstore 2>/dev/null
+docker build --no-cache -t zabatstore:latest .
+docker run -d --name zabatstore -p 80:8080 zabatstore:latest
+docker logs -f zabatstore
