@@ -1,7 +1,7 @@
 ==========================================
 Proyecto: Zabat Store
 ==========================================
-Autores: [Tu nombre] y [Compañero]
+Autores: José Sepúlveda Concha
 Asignatura: Seguridad y Calidad en el Desarrollo de Software
 Universidad: [Nombre de la institución]
 Fecha: [27/10/2025]
@@ -31,12 +31,6 @@ que permite el arriendo de maquinaria agrícola entre usuarios.
 1. Abrir consola en la carpeta del proyecto
 2. Ejecutar: ./mvnw spring-boot:run
 3. Abrir en el navegador: http://localhost:8080/home
-
-## Credenciales de prueba:
-
-usuario1@demo.cl / 123456
-usuario2@demo.cl / 123456
-admin@demo.cl / 123456
 
 ==========================================
 Desarrollado con fines académicos
