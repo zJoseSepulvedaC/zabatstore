@@ -1,43 +1,102 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
   <head>
     <meta charset="UTF-8" />
     <title>Maquinarias</title>
     <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <link rel="stylesheet" th:href="@{/css/maquinarias.css}" />
   </head>
   <body>
-    <h2>Maquinaria disponible</h2>
+    <header class="subheader">
+      <h1>Maquinaria disponible</h1>
+      <p>Busca por tipo, ubicación, fecha y precio máximo.</p>
+    </header>
 
-    <form method="get" th:action="@{/maquinarias}">
-      <input type="text" name="tipo" placeholder="Tipo" th:value="${fTipo}" />
-      <input
-        type="text"
-        name="ubicacion"
-        placeholder="Ubicación"
-        th:value="${fUbicacion}"
-      />
-      <input type="date" name="fechaDesde" th:value="${fFechaDesde}" />
-      <input
-        type="number"
-        step="0.01"
-        name="maxPrecio"
-        placeholder="Precio máx"
-        th:value="${fMaxPrecio}"
-      />
-      <button type="submit">Buscar</button>
-    </form>
+    <section class="container">
+      <form class="form-busqueda" method="get" th:action="@{/maquinarias}">
+        <div class="row">
+          <label for="tipo">Tipo</label>
+          <input
+            type="text"
+            id="tipo"
+            name="tipo"
+            th:value="${fTipo}"
+            maxlength="50"
+            pattern="^[\\p{L}0-9\\s-]*$"
+          />
+        </div>
 
-    <p th:if="${#lists.isEmpty(maquinarias)}">No hay resultados.</p>
+        <div class="row">
+          <label for="ubicacion">Ubicación</label>
+          <input
+            type="text"
+            id="ubicacion"
+            name="ubicacion"
+            th:value="${fUbicacion}"
+            maxlength="50"
+            pattern="^[\\p{L}0-9\\s-]*$"
+          />
+        </div>
 
-    <ul>
-      <li th:each="m : ${maquinarias}">
-        <b th:text="${m.tipo}">Tipo</b> —
-        <span th:text="${m.ubicacion}">Ubicación</span> —
-        <span th:text="${m.precioDiario}">Precio</span>
-        <a th:href="@{'/maquinarias/' + ${m.id} + '/detalle'}">Ver detalle</a>
-      </li>
-    </ul>
+        <div class="row">
+          <label for="fechaDesde">Disponible desde</label>
+          <input
+            type="date"
+            id="fechaDesde"
+            name="fechaDesde"
+            th:value="${fFechaDesde}"
+          />
+        </div>
 
-    <a th:href="@{/maquinarias/nueva}">Publicar (requiere login)</a>
+        <div class="row">
+          <label for="maxPrecio">Precio máx</label>
+          <input
+            type="number"
+            id="maxPrecio"
+            name="maxPrecio"
+            step="0.01"
+            min="0"
+            th:value="${fMaxPrecio}"
+          />
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn-primary">Buscar</button>
+        </div>
+      </form>
+
+      <p th:if="${#lists.isEmpty(maquinarias)}" class="muted">
+        No hay resultados.
+      </p>
+
+      <ul class="lista">
+        <li class="card" th:each="m : ${maquinarias}">
+          <div class="card-body">
+            <div class="card-title">
+              <strong th:text="${m.tipo}">Tipo</strong>
+            </div>
+            <div class="card-meta">
+              <span>Ubicación: <b th:text="${m.ubicacion}">Ubicación</b></span>
+              <span
+                >Precio diario: <b th:text="${m.precioDiario}">Precio</b></span
+              >
+            </div>
+            <div class="card-actions">
+              <a
+                class="btn-link"
+                th:href="@{'/maquinarias/' + ${m.id} + '/detalle'}"
+                >Ver detalle</a
+              >
+            </div>
+          </div>
+        </li>
+      </ul>
+
+      <div class="publicar">
+        <a class="btn-secondary" th:href="@{/maquinarias/nueva}"
+          >Publicar (requiere login)</a
+        >
+      </div>
+    </section>
   </body>
 </html>

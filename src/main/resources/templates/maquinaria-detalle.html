@@ -1,21 +1,30 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
   <head>
     <meta charset="UTF-8" />
-    <title>Detalle</title>
+    <title th:text="'Detalle - ' + ${m.tipo}">Detalle</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <link rel="stylesheet" th:href="@{/css/maquinarias.css}" />
   </head>
   <body>
-    <a th:href="@{/maquinarias}">&larr; Volver</a>
-    <h2 th:text="${m.tipo}">Tipo</h2>
-    <p>Ubicación: <span th:text="${m.ubicacion}"></span></p>
-    <p>Disponible desde: <span th:text="${m.disponibleDesde}"></span></p>
-    <p>Precio diario: <span th:text="${m.precioDiario}"></span></p>
-    <hr />
-    <p>Marca: <span th:text="${m.marca}"></span></p>
-    <p>Año: <span th:text="${m.anio}"></span></p>
-    <p>Capacidad: <span th:text="${m.capacidad}"></span></p>
-    <p>Mantenciones: <span th:text="${m.mantenciones}"></span></p>
-    <p>Condiciones: <span th:text="${m.condiciones}"></span></p>
-    <p>Medios de pago: <span th:text="${m.mediosPago}"></span></p>
+    <section class="container">
+      <a class="btn-link back" th:href="@{/maquinarias}">&larr; Volver</a>
+
+      <article class="card detalle">
+        <h2 th:text="${m.tipo}">Tipo</h2>
+
+        <div class="grid2">
+          <p>Ubicación: <b th:text="${m.ubicacion}"></b></p>
+          <p>Disponible desde: <b th:text="${m.disponibleDesde}"></b></p>
+          <p>Precio diario: <b th:text="${m.precioDiario}"></b></p>
+          <p>Marca: <b th:text="${m.marca}"></b></p>
+          <p>Año: <b th:text="${m.anio}"></b></p>
+          <p>Capacidad: <b th:text="${m.capacidad}"></b></p>
+          <p>Mantenciones: <b th:text="${m.mantenciones}"></b></p>
+          <p>Condiciones: <b th:text="${m.condiciones}"></b></p>
+          <p>Medios de pago: <b th:text="${m.mediosPago}"></b></p>
+        </div>
+      </article>
+    </section>
   </body>
 </html>

@@ -1,0 +1,76 @@
+.card {
+  width: 520px;
+  margin: 60px auto;
+  padding: 32px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+}
+
+h2 {
+  color: #336633;
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+label {
+  display: block;
+  margin: 10px 0 6px;
+  font-weight: 600;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+textarea {
+  min-height: 90px;
+}
+
+.actions {
+  margin-top: 16px;
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  flex: 1;
+  padding: 10px;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+  background: #336633;
+  color: #fff;
+  font-size: 15px;
+  text-align: center;
+  line-height: 36px;
+}
+
+.btn.secondary {
+  background: #888;
+}
+
+/* alertas */
+.alert {
+  margin: 0 auto 14px;
+  text-align: center;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+.alert.success {
+  background: #e8f7e8;
+  color: #165b16;
+  border: 1px solid #165b16;
+}
+
+/* <a> con look de botón */
+.as-link {
+  text-decoration: none;
+  display: inline-block;
+}

@@ -1,0 +1,72 @@
+/* Fondo general igual que el resto */
+body {
+  margin: 0;
+  font-family: "Segoe UI", Roboto, sans-serif;
+  background: linear-gradient(180deg, #f4fff4 0%, #e8f5e9 100%);
+  color: #333;
+}
+
+/* Contenedor del formulario */
+.registro-container {
+  width: 420px;
+  margin: 80px auto;
+  padding: 40px 30px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* Título */
+.registro-container h2 {
+  color: #2e7d32;
+  margin-bottom: 25px;
+}
+
+/* Campos */
+.registro-container label {
+  display: block;
+  text-align: left;
+  font-weight: bold;
+  margin: 10px 0 5px;
+}
+
+.registro-container input[type="text"],
+.registro-container input[type="email"],
+.registro-container input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Botón */
+.registro-container button {
+  width: 100%;
+  padding: 12px;
+  background-color: #2e7d32;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-top: 15px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+.registro-container button:hover {
+  background-color: #1b5e20;
+}
+
+/* Nota inferior */
+.registro-container p {
+  margin-top: 20px;
+  font-size: 0.9rem;
+}
+.registro-container a {
+  color: #2e7d32;
+  font-weight: bold;
+  text-decoration: none;
+}
+.registro-container a:hover {
+  text-decoration: underline;
+}

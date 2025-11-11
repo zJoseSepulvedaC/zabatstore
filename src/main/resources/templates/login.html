@@ -3,88 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <title>Iniciar sesión</title>
+
+    <!-- CSS global (si lo usas) -->
     <link rel="stylesheet" th:href="@{/css/style.css}" />
-    <style>
-      /* ---- Estilos específicos del login ---- */
-      .login-container {
-        width: 360px;
-        margin: 80px auto;
-        padding: 40px 30px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        background-color: #ffffff;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-        text-align: center;
-      }
-      .login-container h2 {
-        color: #336633;
-        margin-bottom: 25px;
-      }
-      .login-container label {
-        display: block;
-        text-align: left;
-        font-weight: bold;
-        margin: 10px 0 5px;
-      }
-      .login-container input[type="text"],
-      .login-container input[type="password"] {
-        width: 100%;
-        padding: 8px;
-        border-radius: 4px;
-        border: 1px solid #ccc;
-      }
-      .login-container button {
-        width: 100%;
-        padding: 10px;
-        background-color: #336633;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        font-size: 16px;
-        margin-top: 15px;
-        cursor: pointer;
-        transition: background-color 0.2s ease-in-out;
-      }
-      .login-container button:hover {
-        background-color: #295b29;
-      }
-      .login-container .note {
-        margin-top: 20px;
-        font-size: 0.9em;
-        color: #666;
-      }
-      .error-message {
-        color: #b30000;
-        background-color: #ffe6e6;
-        border: 1px solid #b30000;
-        padding: 8px;
-        border-radius: 4px;
-        margin-bottom: 10px;
-      }
-      .success-message {
-        color: #165b16;
-        background-color: #e8f7e8;
-        border: 1px solid #165b16;
-        padding: 8px;
-        border-radius: 4px;
-        margin-bottom: 10px;
-      }
-    </style>
+    <!-- CSS específico del login (nuevo archivo) -->
+    <link rel="stylesheet" th:href="@{/css/login.css}" />
   </head>
   <body>
     <div class="login-container">
       <h2>Iniciar sesión</h2>
 
       <!-- mensajes -->
-      <div th:if="${param.error}" class="error-message">
+      <div th:if="${param.error}" class="alert error-message">
         Usuario o contraseña incorrectos.
       </div>
-      <div th:if="${param.logout}" class="success-message">
+      <div th:if="${param.logout}" class="alert success-message">
         Sesión cerrada correctamente.
       </div>
       <div
         th:if="${success}"
-        class="success-message"
+        class="alert success-message"
         th:text="${success}"
       ></div>
 
@@ -107,7 +45,7 @@
           required
         />
 
-        <!-- Token CSRF: solo si existe (evita 500 cuando CSRF está deshabilitado) -->
+        <!-- Token CSRF (condicional por si cambias config en dev) -->
         <input
           type="hidden"
           th:if="${_csrf != null}"
@@ -115,10 +53,10 @@
           th:value="${_csrf.token}"
         />
 
-        <button type="submit">Entrar</button>
+        <button type="submit" class="btn-primary">Entrar</button>
       </form>
 
-      <div class="note">
+      <div class="note users">
         <p><strong>Usuarios de prueba:</strong></p>
         <p>ana@agro.cl / pass123</p>
         <p>benja@agro.cl / pass123</p>
