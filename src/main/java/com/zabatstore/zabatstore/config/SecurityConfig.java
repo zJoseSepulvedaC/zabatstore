@@ -1,12 +1,12 @@
 package com.zabatstore.zabatstore.config;
 
+import com.zabatstore.zabatstore.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -14,17 +14,17 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.StaticHeadersWriter;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    // ÚNICO PasswordEncoder del contexto
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -39,27 +39,36 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            // CSRF para formularios; ignora H2 console
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**", "/h2/**"))
+            // 🔴 Desactivamos CSRF (API con JWT + simplificar)
+            .csrf(csrf -> csrf.disable())
 
-            // Autorización
             .authorizeHttpRequests(auth -> auth
+                // Recursos estáticos
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/favicon.ico").permitAll()
+
+                // Páginas públicas
                 .requestMatchers("/", "/home", "/recetas", "/login", "/registro", "/buscar",
                                  "/h2-console/**", "/h2/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/maquinarias", "/maquinarias/").permitAll()
-                .requestMatchers(HttpMethod.GET, "/maquinarias/**").authenticated()
-                .anyRequest().authenticated()
+
+                // API pública: login que genera JWT
+                .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+
+                // APIs privadas: todo lo demás bajo /api/** requiere JWT
+                .requestMatchers("/api/**").authenticated()
+
+                // El resto de las rutas web lo dejamos accesible
+                .anyRequest().permitAll()
             )
 
-            // Login / Logout
+            // ✅ Login web por formulario (arregla tu 405 en /login)
             .formLogin(form -> form
-                .loginPage("/login")
-                .loginProcessingUrl("/login")
+                .loginPage("/login")          // tu template de login
+                .loginProcessingUrl("/login") // POST del formulario
                 .defaultSuccessUrl("/recetas", true)
                 .failureUrl("/login?error")
                 .permitAll()
             )
+
             .logout(logout -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/recetas")
@@ -67,31 +76,27 @@ public class SecurityConfig {
                 .permitAll()
             )
 
-            // Sesión stateful
-            .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+            // Sesión solo cuando haga falta (para la parte web)
+            .sessionManagement(sess -> sess
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+            );
 
-            // Acceso denegado
-            .exceptionHandling(ex -> ex.accessDeniedPage("/acceso-denegado"))
-
-            .headers(headers -> {
-            // Anti-Clickjacking: permite iframes solo desde el mismo origen (útil para H2)
+        // Cabeceras útiles
+        http.headers(headers -> {
             headers.frameOptions(frame -> frame.sameOrigin());
-
-            // CSP sin inline, con directivas completas y fallback
             headers.addHeaderWriter(new StaticHeadersWriter(
                 "Content-Security-Policy",
                 String.join(" ",
                     "default-src 'self';",
                     "script-src 'self';",
-                    "style-src 'self';",           // 'unsafe-inline'
+                    "style-src 'self';",
                     "img-src 'self' data:;",
                     "object-src 'none';",
                     "base-uri 'self';",
                     "frame-ancestors 'self';",
-                    "form-action 'self';"    //  Anti-Clickjacking
+                    "form-action 'self';"
                 )
             ));
-
             headers.addHeaderWriter(new StaticHeadersWriter("X-Content-Type-Options", "nosniff"));
             headers.addHeaderWriter(new StaticHeadersWriter("Referrer-Policy", "no-referrer"));
             headers.addHeaderWriter(new StaticHeadersWriter(
@@ -100,8 +105,11 @@ public class SecurityConfig {
             ));
         });
 
-
         http.userDetailsService(userDetailsService);
+
+        // Filtro JWT para /api/**
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 }
