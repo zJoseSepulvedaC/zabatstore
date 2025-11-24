@@ -46,3 +46,6 @@ docker rm -f zabatstore 2>/dev/null
 docker build --no-cache -t zabatstore:latest .
 docker run -d --name zabatstore -p 80:8080 zabatstore:latest
 docker logs -f zabatstore
+
+
+mvn clean package -DskipTests
