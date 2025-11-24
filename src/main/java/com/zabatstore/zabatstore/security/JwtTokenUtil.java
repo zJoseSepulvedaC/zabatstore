@@ -16,7 +16,7 @@ public class JwtTokenUtil {
     private final long jwtExpirationMs;
 
     public JwtTokenUtil(
-            @Value("${app.jwt.secret:mi-clave-super-secreta-para-zabatstore-1234567890}") String secret,
+            @Value("${app.jwt.secret}") String secret,
             @Value("${app.jwt.expiration-ms:3600000}") long jwtExpirationMs
     ) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
